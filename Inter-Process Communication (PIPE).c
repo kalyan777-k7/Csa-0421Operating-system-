@@ -9,10 +9,10 @@ int main() {
 
     pipe(fd);
 
-    if (fork() == 0) { // child
+    if (fork() == 0) { 
         read(fd[0], read_msg, sizeof(read_msg));
         printf("Child received: %s\n", read_msg);
-    } else { // parent
+    } else { 
         write(fd[1], write_msg, strlen(write_msg) + 1);
     }
     return 0;
