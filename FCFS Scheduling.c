@@ -10,7 +10,7 @@ int main() {
     for (i = 0; i < n; i++)
         scanf("%d", &bt[i]);
 
-    wt[0] = 0; // first process waiting time = 0
+    wt[0] = 0; 
 
     for (i = 1; i < n; i++)
         wt[i] = wt[i - 1] + bt[i - 1];
