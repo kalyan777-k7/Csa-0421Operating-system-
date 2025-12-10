@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <dirent.h>
+
+int main() {
+    int fd;
+    char buffer[200];
+
+    printf("=== UNIX I/O SYSTEM CALLS DEMO ===\n");
+
+    fd = open("test.txt", O_CREAT | O_RDWR, 0644);
+    if(fd < 0) {
+        perror("open");
+        return 1;
+    }
+    printf("File opened.\n");
+
+    int flags = fcntl(fd, F_GETFL);
+    printf("File flags: %d\n", flags);
+
+    write(fd, "Hello Unix I/O!\n", 16);
+    printf("Data written to file.\n");
+
+    lseek(fd, 0, SEEK_SET);  // move pointer to start
+
+    int n = read(fd, buffer, sizeof(buffer) - 1);
+    buffer[n] = '\0';
+    printf("Read from file:\n%s\n", buffer);
+    struct stat st;
+    stat("test.txt", &st);
+    printf("\nFile Information using stat():\n");
+    printf("Size: %ld bytes\n", st.st_size);
+    printf("Permissions: %o\n", st.st_mode & 0777);
+
+    close(fd);
+    printf("\nDirectory Listing using opendir() & readdir():\n");
+
+    DIR *d = opendir(".");
+    if(!d) {
+        perror("opendir");
+        return 1;
+    }
+
+    struct dirent *dir;
+    while((dir = readdir(d)) != NULL) {
+        printf("%s\n", dir->d_name);
+    }
+
+    closedir(d);
+    return 0;
+}
